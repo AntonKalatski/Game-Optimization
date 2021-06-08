@@ -1,30 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UpdateWorld : MonoBehaviour
 {
-    GameObject world;
+    [SerializeField] private GameObject world;
+    [SerializeField] private Renderer renderer;
     Vector2 lastPoint = Vector2.zero;
+
     Texture2D texture; //Texture should be set to Read/Write and RGBA32bit in Inspector with no mipmaps
 
     void Start()
     {
-        Application.targetFrameRate = 150;
-        world = GameObject.Find("World");
-        texture = Instantiate(world.GetComponent<Renderer>().material.mainTexture) as Texture2D;
-
-        //add yellow cells using perlin noise to create some patches of "minerals"
+        texture = renderer.material.mainTexture as Texture2D;
         for (int y = 0; y < texture.height; y++)
         {
             for (int x = 0; x < texture.width; x++)
             {
-                if (Mathf.PerlinNoise(x/20.0f,y/20.0f) * 100 < 40)
-                  texture.SetPixel(x, y, Color.yellow);
+                if (Mathf.PerlinNoise(x / 20.0f, y / 20.0f) * 100 < 40)
+                    texture.SetPixel(x, y, Color.yellow);
             }
         }
-
-        world.GetComponent<Renderer>().material.mainTexture = texture;
+        renderer.material.mainTexture = texture;
         texture.Apply();
     }
 
@@ -47,20 +45,22 @@ public class UpdateWorld : MonoBehaviour
 
     void SimulateWorld(Texture2D texture)
     {
-        for (int y = 0; y < texture.height; y++)
+        int x = UnityEngine.Random.Range(0, texture.width);
+        int y = UnityEngine.Random.Range(0, texture.height);
+        //for (int y = 0; y < texture.height; y++)
         {
-            for (int x = 0; x < texture.width; x++)
+            //for (int x = 0; x < texture.width; x++)
             {
                 //if a cell has more than 4 black neighbours make it blue
                 //Commercial Property
-                if (CountNeighbourColor(x, y, Color.black, texture) > 4 )
+                if (CountNeighbourColor(x, y, Color.black, texture) > 4)
                 {
                     texture.SetPixel(x, y, Color.blue);
                 }
                 //if a cell has a black neighbour and is not black itself
                 //set to green
                 //Residential Property
-                else if (CountNeighbourColor(x, y, Color.black, texture) > 0 && texture.GetPixel(x,y) == Color.white)
+                else if (CountNeighbourColor(x, y, Color.black, texture) > 0 && texture.GetPixel(x, y) == Color.white)
                 {
                     texture.SetPixel(x, y, Color.green);
                 }
@@ -89,13 +89,13 @@ public class UpdateWorld : MonoBehaviour
     void Update()
     {
         //record start of mouse drawing (or erasing) to get the first position the mouse touches down
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) )
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
-            RaycastHit ray;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out ray))
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                lastPoint = new Vector2((int)(ray.textureCoord.x * texture.width),
-                                        (int)(ray.textureCoord.y * texture.height));
+                lastPoint = new Vector2((int)(hit.textureCoord.x * texture.width),
+                                        (int)(hit.textureCoord.y * texture.height));
             }
         }
         //draw a line between the last known location of the mouse and the current location
@@ -126,8 +126,8 @@ public class UpdateWorld : MonoBehaviour
                 texture.Apply();
             }
         }
-
-        SimulateWorld(texture);
+        for (int i = 0; i < 10; i++)
+            SimulateWorld(texture);
     }
 
     //Draw a pixel by pixel line between two points
