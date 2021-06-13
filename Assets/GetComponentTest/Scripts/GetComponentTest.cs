@@ -1,24 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GetComponentTest : MonoBehaviour
 {
-    private Transform transform;
     private void Start()
     {
-        GetComponentT();
-        GetComponentString();
-        GetComponentTypeOf();
+        GetSearchable1();
+        GetSearchable2();
+        GetSearchable3();
+        
     }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            GetComponentT();
-            GetComponentString();
-            GetComponentTypeOf();
+            GetSearchable1();
+            GetSearchable2();
+            GetSearchable3();
+
+        }
+    }
+
+    private void GetSearchable1()
+    {
+        for (int i = 0; i < 5000; i++)
+        {
+            var searchable = (ISearchable)GetComponent("ISearchable");
+        }
+    }
+    private void GetSearchable2()
+    {
+        for (int i = 0; i < 5000; i++)
+        {
+            var searchable = GetComponent<ISearchable>();
+        }
+    }
+    private void GetSearchable3()
+    {
+        for (int i = 0; i < 5000; i++)
+        {
+            var searchable = (ISearchable)GetComponent(typeof (ISearchable));
         }
     }
 
@@ -28,19 +52,19 @@ public class GetComponentTest : MonoBehaviour
         {
             var transform = GetComponent<Transform>();
         }
-    } 
+    }
     private void GetComponentString()
     {
         for (int i = 0; i < 5000; i++)
         {
-            var  transform = (Transform) GetComponent("Transform");
+            var transform = (Transform)GetComponent("Transform");
         }
     }
     private void GetComponentTypeOf()
     {
         for (int i = 0; i < 5000; i++)
         {
-            var transform = (Transform) GetComponent(typeof(Transform));
+            var transform = (Transform)GetComponent(typeof(Transform));
         }
     }
 }
