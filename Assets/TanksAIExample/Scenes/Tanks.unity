@@ -393,10 +393,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tanks: []
-  tankPrefab: {fileID: 7656129980739121518, guid: 891f4e209cf3c406a970cf2805371fb9, type: 3}
+  tankPrefab: {fileID: 6675424968627343866, guid: 891f4e209cf3c406a970cf2805371fb9, type: 3}
   playerTank: {fileID: 1670846841}
   numberOfTanks: 100
-  speed: 0
+  speed: 5
 --- !u!4 &1140756516
 Transform:
   m_ObjectHideFlags: 0
