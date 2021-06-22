@@ -12,14 +12,14 @@ public class EnemyTank : MonoBehaviour
     {
         _speed = speed;
         _player = player;
-        FollowPlayer();
+        StartCoroutine(FollowPlayer());
     }
-    private async Task FollowPlayer()
+    private IEnumerator FollowPlayer()
     {
         while(true)
         {
             transform.LookAt(_player.transform.position);
-            await Task.Delay(Random.Range(1, 3));
+            yield return new WaitForSeconds(Random.Range(1, 3));
         }
     }
 
